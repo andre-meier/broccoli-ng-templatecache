@@ -1,6 +1,6 @@
 {
   "name": "broccoli-ng-templatecache",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "description": "Broccoli wrapper over ng-templatecache",
   "main": "lib/index.js",
   "scripts": {
