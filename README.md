@@ -20,5 +20,6 @@ var tree = new NgTemplatecache([inputTrees], options);
 
 ## Options
 
-- `module` (default: `"templates"`) sets the generate module name. `false` means don't create a module
+- `outputFile` destination of the merged templates
+- `module` (default: `"templates"`) generated module name. `false` means don't create a module
 - `standalone` (default: `false`) if `true`, the module will be created as `angular.module('xxx', [])`
