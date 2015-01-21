@@ -6,6 +6,11 @@ import {existsSync, mkdirSync, rmdirSync, readFileSync} from 'fs';
 export default {
 
   setUp(done) {
+    this.inputTrees = [
+      pickFiles('test/fixtures', {srcDir: '/', destDir: '/'}),
+      pickFiles('test/fixtures2', {srcDir: '/', destDir: '/'})
+    ];
+
     if (!existsSync('tmp')) {
       mkdirSync('tmp');
     }
@@ -20,21 +25,22 @@ export default {
   },
 
   defaultOpts(test) {
-    const tree = new NgTemplatecache(['test/fixtures', 'test/fixtures2'], {outputFile: 'templates.js'});
+    const tree = new NgTemplatecache(this.inputTrees, {outputFile: 'templates.js'});
     this.builder = new Builder(tree);
     this.builder.build()
       .then(function(results) {
         const content = readFileSync(results.directory + '/templates.js', {encoding: 'utf-8'});
-        test.ok(content.includes('fixtures/two.html'), 'Missing two.html entry');
-        test.ok(content.includes('fixtures/one.html'), 'Missing one.html entry');
-        test.ok(content.includes('fixtures2/three.html'), 'Missing three.html entry');
+        test.ok(content.includes('two.html'), 'Missing two.html entry');
+        test.ok(content.includes('one.html'), 'Missing one.html entry');
+        test.ok(content.includes('three.html'), 'Missing three.html entry');
+        test.ok(content.includes('nested/deep.html'), 'Missing three.html entry');
       })
       .catch(test.ifError)
       .finally(test.done);
   },
 
   customModule(test) {
-    const tree = new NgTemplatecache(['test/fixtures', 'test/fixtures2'], {
+    const tree = new NgTemplatecache(this.inputTrees, {
       outputFile: 'templates.js',
       module: 'superCustom'
     });
@@ -49,7 +55,7 @@ export default {
   },
 
   standalone(test) {
-    const tree = new NgTemplatecache(['test/fixtures', 'test/fixtures2'], {
+    const tree = new NgTemplatecache(this.inputTrees, {
       outputFile: 'templates.js',
       standalone: true
     });
