@@ -11,7 +11,7 @@ const readdirAsync = denodeify(fs.readdir);
 const writeFileAsync = denodeify(fs.writeFile);
 const readdirpAsync = denodeify(readdirp);
 
-const pickOpts = pick(['module', 'standalone']);
+const pickOpts = pick(['module', 'standalone', 'prefix']);
 const listFiles = compose(readdirpAsync, createMapEntry('root'));
 const readFiles = map(readFileAsyncWith({encoding: 'utf-8'}));
 function toEntry(kvp) { const [k, v] = kvp; return {path: k, content: v}; }
