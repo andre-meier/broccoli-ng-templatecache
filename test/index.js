@@ -1,14 +1,14 @@
 import NgTemplatecache from '../src';
 import {Builder} from 'broccoli';
-import pickFiles from 'broccoli-static-compiler';
+import Funnel from 'broccoli-funnel';
 import {existsSync, mkdirSync, rmdirSync, readFileSync} from 'fs';
 
 export default {
 
   setUp(done) {
     this.inputTrees = [
-      pickFiles('test/fixtures', {srcDir: '/', destDir: '/'}),
-      pickFiles('test/fixtures2', {srcDir: '/', destDir: '/'})
+      new Funnel('test/fixtures', {destDir: '/'}),
+      new Funnel('test/fixtures2', {destDir: '/'})
     ];
 
     if (!existsSync('tmp')) {
@@ -28,8 +28,8 @@ export default {
     const tree = new NgTemplatecache(this.inputTrees, {outputFile: 'templates.js'});
     this.builder = new Builder(tree);
     this.builder.build()
-      .then(function(results) {
-        const content = readFileSync(results.directory + '/templates.js', {encoding: 'utf-8'});
+      .then(() => {
+        const content = readFileSync(this.builder.outputPath + '/templates.js', {encoding: 'utf-8'});
         test.ok(content.includes('two.html'), 'Missing two.html entry');
         test.ok(content.includes('one.html'), 'Missing one.html entry');
         test.ok(content.includes('three.html'), 'Missing three.html entry');
@@ -46,8 +46,8 @@ export default {
     });
     this.builder = new Builder(tree);
     this.builder.build()
-      .then(function(results) {
-        const content = readFileSync(results.directory + '/templates.js', {encoding: 'utf-8'});
+      .then(() => {
+        const content = readFileSync(this.builder.outputPath + '/templates.js', {encoding: 'utf-8'});
         test.ok(content.includes('superCustom'), 'Missing superCustom module');
       })
       .catch(test.ifError)
@@ -61,13 +61,11 @@ export default {
     });
     this.builder = new Builder(tree);
     this.builder.build()
-      .then(function(results) {
-        const content = readFileSync(results.directory + '/templates.js', {encoding: 'utf-8'});
+      .then(() => {
+        const content = readFileSync(this.builder.outputPath + '/templates.js', {encoding: 'utf-8'});
         test.ok(content.includes('angular.module("templates", [])'), 'Module was not standalone');
       })
       .catch(test.ifError)
       .finally(test.done);
   },
-
-
 };
